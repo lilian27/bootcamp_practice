@@ -1,0 +1,45 @@
+{
+  "persons": [
+    {
+      "name": "Arto Hellas",
+      "number": "040-123456",
+      "id": 1
+    },
+    {
+      "name": "Ada Lovelace",
+      "number": "39-44-5323523",
+      "id": 2
+    },
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345",
+      "id": 3
+    },
+    {
+      "name": "Mary Poppendieck",
+      "number": "39-23-6423122",
+      "id": 4
+    }
+  ],
+  "notes": [
+    {
+      "content": "a new note",
+      "date": "2021-12-17T20:30:08.381Z",
+      "important": false,
+      "id": 1
+    },
+    {
+      "content": "a new notedddd",
+      "date": "2021-12-27T20:33:42.943Z",
+      "important": false,
+      "id": 2
+    }
+  ],
+  "guia" :[
+    {
+      "name": "lilian",
+      "id": 1,
+      "number": 932784469
+    }
+  ]
+}
