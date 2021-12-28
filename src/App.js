@@ -6,8 +6,6 @@ import Note from './Note.js'
 import PersonForm from './PersonForm'
 import Index from './paises/Index.js'
 import noteService from './services/notes'
-import axios from 'axios'
-
 
 function App() {
 
@@ -28,7 +26,7 @@ function App() {
       .then(response => {
         setNotes(response)
       })
-  }, [])  // 2do parametro indica cuando se ejecutara en este caso solo 1ra renderizacion del componente
+  }, [])
 
   console.log('render', notes.length, 'notes')
 
@@ -39,7 +37,7 @@ function App() {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() < 0.5,
-      id: notes.length + 1
+      id: newNote
     }
 
     noteService

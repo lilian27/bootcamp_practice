@@ -1,56 +1,73 @@
-
-
 import React, { useState, useEffect } from 'react'
-import ListPerson from './ListPerson'
-import axios from 'axios'
-
-const baseUrl = 'http://localhost:3001/guia'
-
-
+import ListPerson from './DetailPerson'
+import personService from './services/person'
 
 const PersonForm = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
+    const [newFilter, setNewFilter] = useState('')
 
-    useEffect(() =>{
-        console.log('entro effect');
-        axios.get(baseUrl).then(response => {
-            console.log('data personas', response);
-            setPersons(response.data);
+    useEffect(() => {
+        personService.getAll().then(response => {
+            setPersons(response);
         })
     }, [])
 
     const addName = (event) => {
         event.preventDefault()
-        console.log('add new name')
-        const existe = persons.includes(newName);
+        const existe = persons.filter(item => item.name.toLowerCase() === newName.toLowerCase());
+        const nameObjet = {
+            name: newName,
+            id: newName,
+            number: newNumber
+        }
 
-        if (!existe) {
-            const nameObjet = {
-                name: newName,
-                id: Math.random(),
-                number: newNumber
-            }
-
-            //axios.post(baseUrl, nameObjet)
-            setPersons(persons.concat(nameObjet))
-
-            setNewName('')
-            setNewNumber('')
+        if (existe.length === 0) {
+            personService.create(nameObjet).then(response => {
+                setPersons(persons.concat(nameObjet))
+                setNewName('')
+                setNewNumber('')
+            }).catch(error => {
+                console.log(`error ${error}`);
+            })
         } else {
-            alert(`${newName} is already added to phonebook`);
+            const idUpdate = existe[0].id
+            if (window.confirm(`${newName} ya se encuentra registrado, ¿Desea reemplazar el número?`)) {
+                personService.update(idUpdate, nameObjet).then(response => {
+                    setPersons(persons.map(persons => persons.id !== idUpdate ? persons : response))
+                })
+            };
         }
     }
 
     const handleNameChange = (event) => {
-        console.log(event.target.value);
         setNewName(event.target.value)
     }
 
     const handleNumberChange = (event) => {
         setNewNumber(event.target.value)
     }
+
+    const handleFilterChange = (event) => {
+        setNewFilter(event.target.value)
+    }
+
+    const filterNames = name => {
+        return persons.filter((x) =>
+            x.name.toLowerCase().indexOf(name.toLowerCase()) > -1
+        );
+    }
+
+    const handleDelete = (id) => {
+        personService.remove(id).then(response => {
+            setPersons(persons.filter(persona => persona.id !== id))
+        }).catch(error => {
+            console.log(`Un error ha ocurrido al eliminar persona`)
+        })
+    }
+
+    const filterToShow = newFilter.length > 0 ? filterNames(newFilter) : persons
 
     return (
         <div>
@@ -63,14 +80,17 @@ const PersonForm = () => {
                     Number: <input value={newNumber} onChange={handleNumberChange} />
                     <button type="submit">guardar</button>
                 </div>
-
-                {
-                    persons.length > 0 && <ListPerson persons={persons} />
-                }
-
+                <div>
+                    <h2>Numbers</h2>
+                    <div>filter shown whith <input value={newFilter} onChange={handleFilterChange} /></div>
+                    <ul>
+                        {filterToShow.map(persona => (
+                            <ListPerson key={persona.id} persona={persona} handleDelete={() => handleDelete(persona.id)} />
+                        ))}
+                    </ul>
+                </div>
             </form>
         </div>
     )
 }
-
 export default PersonForm
