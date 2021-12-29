@@ -6,6 +6,8 @@ import Note from './Note.js'
 import PersonForm from './PersonForm'
 import Index from './paises/Index.js'
 import noteService from './services/notes'
+import Notificacion from './Notificacion';
+import Footer from './Footer';
 
 function App() {
 
@@ -18,7 +20,9 @@ function App() {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('a new note')
   const [showAll, setShowAll] = useState(true)
-
+  
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [tipoMessage, setTipoMessage] = useState(null)
 
   useEffect(() => {
     noteService
@@ -55,6 +59,16 @@ function App() {
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
 
+  
+  const sendMessage = (mensaje, tipoMensaje) => {
+    setErrorMessage(mensaje)
+    setTipoMessage(tipoMensaje)
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 3000)
+  }
+  
+
   const toggleImportanceOf = (id) => {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
@@ -63,11 +77,12 @@ function App() {
       .update(id, changedNote)
       .then(response => {
         setNotes(notes.map(note => note.id !== id ? note : response))
+
+        sendMessage(`Note '${note.content}' ha cambiado importancia!!!`, 0)
+
       }).catch(error => {
-        alert(
-          `the note '${note.content}' was already deleted from server`
-        )
         setNotes(notes.filter(n => n.id !== id))
+        sendMessage(`Nota '${note.content}' ya existe`, 1)
       })
   }
 
@@ -90,6 +105,7 @@ function App() {
       </div>
       <div id="notas">
         <h1>Notes</h1>
+        <Notificacion messaje={errorMessage} tipo={tipoMessage}></Notificacion>
         <div>
           <button onClick={() => setShowAll(!showAll)}>
             show {showAll ? 'important' : 'all'}
@@ -124,6 +140,8 @@ function App() {
         <hr />
         <Index />
       </div>
+
+      <Footer> </Footer>
     </div>
   );
 }
