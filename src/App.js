@@ -73,14 +73,18 @@ function App() {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
 
+    console.log("ID::", id)
+    console.log("changedNote::", changedNote)
     noteService
       .update(id, changedNote)
       .then(response => {
+        console.log("RESPONSE", response)
         setNotes(notes.map(note => note.id !== id ? note : response))
 
         sendMessage(`Note '${note.content}' ha cambiado importancia!!!`, 0)
 
       }).catch(error => {
+        console.log("ERROR", error);
         setNotes(notes.filter(n => n.id !== id))
         sendMessage(`Nota '${note.content}' ya existe`, 1)
       })
