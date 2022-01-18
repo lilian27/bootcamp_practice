@@ -8,6 +8,7 @@ import Index from './paises/Index.js'
 import noteService from './services/notes'
 import Notificacion from './Notificacion';
 import Footer from './Footer';
+import loginService from './services/login'
 
 function App() {
 
@@ -20,9 +21,13 @@ function App() {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('a new note')
   const [showAll, setShowAll] = useState(true)
-  
+
   const [errorMessage, setErrorMessage] = useState(null)
   const [tipoMessage, setTipoMessage] = useState(null)
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
     noteService
@@ -30,6 +35,16 @@ function App() {
       .then(response => {
         setNotes(response)
       })
+  }, [])
+
+  // validar si los datos del usuario a esta conectado
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+    }
   }, [])
 
   console.log('render', notes.length, 'notes')
@@ -59,7 +74,7 @@ function App() {
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
 
-  
+
   const sendMessage = (mensaje, tipoMensaje) => {
     setErrorMessage(mensaje)
     setTipoMessage(tipoMensaje)
@@ -67,7 +82,7 @@ function App() {
       setErrorMessage(null)
     }, 3000)
   }
-  
+
 
   const toggleImportanceOf = (id) => {
     const note = notes.find(n => n.id === id)
@@ -90,6 +105,92 @@ function App() {
       })
   }
 
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    console.log('logging in with', username, password)
+
+    try {
+      const user = await loginService.login({
+        username, password,
+      })
+      window.localStorage.setItem(
+        'loggedAppUser', JSON.stringify(user)
+      )
+      noteService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      sendMessage('Wrong credentials', 1)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const cerrarSession = () => {
+    window.localStorage.clear()
+    setUser(null)
+  }
+
+  const loginForm = () => (
+    <form onSubmit={handleLogin}>
+      <div>
+        username
+        <input
+          type="text"
+          value={username}
+          name="Username"
+          onChange={({ target }) => setUsername(target.value)}
+        />
+      </div>
+      <div>
+        password
+        <input
+          type="password"
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
+      <button type="submit">login</button>
+    </form>
+  )
+
+  const noteForm = () => (
+    <div>
+      <form onSubmit={addNote}>
+        <input
+          value={newNote}
+          onChange={handleNoteChange}
+        />
+        <button type="submit">save</button>
+      </form>
+
+      <div id="notas">
+        <h1>Notes</h1>
+
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map(note => (
+            <Note
+              key={note.id}
+              note={note}
+              toggleImportance={() => toggleImportanceOf(note.id)}
+            />
+          ))}
+        </ul>
+
+      </div>
+    </div>
+  )
+  
+
   return (
     <div>
       <div id="contador">
@@ -107,33 +208,22 @@ function App() {
           text='minus'
         />
       </div>
-      <div id="notas">
-        <h1>Notes</h1>
-        <Notificacion messaje={errorMessage} tipo={tipoMessage}></Notificacion>
+      <br /><br />
+      <Notificacion messaje={errorMessage} tipo={tipoMessage}></Notificacion>
+      <br /><br />
+      {user === null ?
+        loginForm() :
         <div>
-          <button onClick={() => setShowAll(!showAll)}>
-            show {showAll ? 'important' : 'all'}
-
-          </button>
+          <div className="user">
+            <p><strong>Bienvenid@:</strong> {user.name} </p>
+            <button type="submit" onClick={cerrarSession}> Salir</button>
+          </div>
+          {noteForm()}
         </div>
-        <ul>
-          {notesToShow.map(note => (
-            <Note
-              key={note.id}
-              note={note}
-              toggleImportance={() => toggleImportanceOf(note.id)}
-            />
-          ))}
-        </ul>
+      }
+      <br /><br />
 
-        <form onSubmit={addNote}>
-          <input value={newNote}
-            onChange={handleNoteChange}
-          ></input>
-          <button type="submit"> Save</button>
 
-        </form>
-      </div>
 
       <div id="guia-telefonica">
         <hr />

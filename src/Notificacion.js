@@ -24,7 +24,7 @@ const Notificacion = ({ messaje, tipo }) => {
 
     const estiloMensaje = tipoMessage === 1 ? 'error' : 'process'
     return (
-        <div className={estiloMensaje}>
+        <div className={estiloMensaje} >
             {errorMessage}
         </div>
     )
