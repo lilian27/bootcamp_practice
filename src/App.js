@@ -1,4 +1,4 @@
-import './App.css';
+import './App.css'
 import React, { useState, useEffect } from 'react'
 import Display from './Display.js'
 import Button from './Button.js'
@@ -6,9 +6,10 @@ import Note from './Note.js'
 import PersonForm from './PersonForm'
 import Index from './paises/Index.js'
 import noteService from './services/notes'
-import Notificacion from './Notificacion';
-import Footer from './Footer';
+import Notificacion from './Notificacion'
+import Footer from './Footer'
 import loginService from './services/login'
+import LoginForm from './LoginForm'
 
 function App() {
 
@@ -28,6 +29,8 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     noteService
@@ -68,7 +71,7 @@ function App() {
   }
 
   const handleNoteChange = (event) => {
-    console.log(event.target.value);
+    console.log(event.target.value)
     setNewNote(event.target.value)
   }
 
@@ -88,18 +91,18 @@ function App() {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
 
-    console.log("ID::", id)
-    console.log("changedNote::", changedNote)
+    console.log('ID::', id)
+    console.log('changedNote::', changedNote)
     noteService
       .update(id, changedNote)
       .then(response => {
-        console.log("RESPONSE", response)
+        console.log('RESPONSE', response)
         setNotes(notes.map(note => note.id !== id ? note : response))
 
         sendMessage(`Note '${note.content}' ha cambiado importancia!!!`, 0)
 
       }).catch(error => {
-        console.log("ERROR", error);
+        console.log('ERROR', error)
         setNotes(notes.filter(n => n.id !== id))
         sendMessage(`Nota '${note.content}' ya existe`, 1)
       })
@@ -133,29 +136,28 @@ function App() {
     setUser(null)
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
       <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  )
+    )
+  }
 
   const noteForm = () => (
     <div>
@@ -164,10 +166,10 @@ function App() {
           value={newNote}
           onChange={handleNoteChange}
         />
-        <button type="submit">save</button>
+        <button type='submit'>save</button>
       </form>
 
-      <div id="notas">
+      <div id='notas'>
         <h1>Notes</h1>
 
         <div>
@@ -189,11 +191,10 @@ function App() {
       </div>
     </div>
   )
-  
 
   return (
     <div>
-      <div id="contador">
+      <div id='contador'>
         <Display counter={counter} />
         <Button
           handleClick={increaseByOne}
@@ -214,9 +215,9 @@ function App() {
       {user === null ?
         loginForm() :
         <div>
-          <div className="user">
+          <div className='user'>
             <p><strong>Bienvenid@:</strong> {user.name} </p>
-            <button type="submit" onClick={cerrarSession}> Salir</button>
+            <button type='submit' onClick={cerrarSession}> Salir</button>
           </div>
           {noteForm()}
         </div>
@@ -225,7 +226,7 @@ function App() {
 
 
 
-      <div id="guia-telefonica">
+      <div id='guia-telefonica'>
         <hr />
         <PersonForm />
       </div>
@@ -237,7 +238,7 @@ function App() {
 
       <Footer> </Footer>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
