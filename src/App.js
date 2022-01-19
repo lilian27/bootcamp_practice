@@ -10,6 +10,7 @@ import Notificacion from './Notificacion'
 import Footer from './Footer'
 import loginService from './services/login'
 import LoginForm from './LoginForm'
+import NoteForm from './NoteForm'
 
 function App() {
 
@@ -161,14 +162,15 @@ function App() {
 
   const noteForm = () => (
     <div>
+      
       <form onSubmit={addNote}>
         <input
           value={newNote}
           onChange={handleNoteChange}
         />
         <button type='submit'>save</button>
-      </form>
-
+      </form> 
+      
       <div id='notas'>
         <h1>Notes</h1>
 
