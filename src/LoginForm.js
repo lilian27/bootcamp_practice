@@ -1,4 +1,5 @@
 import React from 'react'
+import Togglable from './Togglable'
 
 const LoginForm = ({
   handleSubmit,
@@ -8,9 +9,8 @@ const LoginForm = ({
   password
 }) => {
   return (
-    <div>
+    <Togglable buttonLabel='Iniciar Sessión'>
       <h2>Login</h2>
-
       <form onSubmit={handleSubmit}>
         <div>
           username
@@ -31,7 +31,7 @@ const LoginForm = ({
         </div>
         <button id="login-button" type="submit">login</button>
       </form>
-    </div>
+    </Togglable>
   )
 }
 

@@ -20,8 +20,7 @@ function App() {
   const decreaseByOne = () => setCounter(counter - 1)
   const setToZero = () => setCounter(0)
 
-  const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('a new note')
+
   const [showAll, setShowAll] = useState(true)
 
   const [errorMessage, setErrorMessage] = useState(null)
@@ -31,7 +30,9 @@ function App() {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const [loginVisible, setLoginVisible] = useState(false)
+  const [notes, setNotes] = useState([])
+
+
 
   useEffect(() => {
     noteService
@@ -51,30 +52,11 @@ function App() {
     }
   }, [])
 
-  console.log('render', notes.length, 'notes')
 
-  const addNote = (event) => {
-    event.preventDefault()
-    console.log('button clicked', event.target)
-    const noteObject = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() < 0.5,
-      id: newNote
-    }
 
-    noteService
-      .create(noteObject)
-      .then(response => {
-        setNotes(notes.concat(response))
-        setNewNote('')
-      })
-  }
 
-  const handleNoteChange = (event) => {
-    console.log(event.target.value)
-    setNewNote(event.target.value)
-  }
+
+
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
 
@@ -137,63 +119,6 @@ function App() {
     setUser(null)
   }
 
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-  }
-
-  const noteForm = () => (
-    <div>
-      
-      <form onSubmit={addNote}>
-        <input
-          value={newNote}
-          onChange={handleNoteChange}
-        />
-        <button type='submit'>save</button>
-      </form> 
-      
-      <div id='notas'>
-        <h1>Notes</h1>
-
-        <div>
-          <button onClick={() => setShowAll(!showAll)}>
-            show {showAll ? 'important' : 'all'}
-
-          </button>
-        </div>
-        <ul>
-          {notesToShow.map(note => (
-            <Note
-              key={note.id}
-              note={note}
-              toggleImportance={() => toggleImportanceOf(note.id)}
-            />
-          ))}
-        </ul>
-
-      </div>
-    </div>
-  )
-
   return (
     <div>
       <div id='contador'>
@@ -211,33 +136,52 @@ function App() {
           text='minus'
         />
       </div>
-      <br /><br />
+
       <Notificacion messaje={errorMessage} tipo={tipoMessage}></Notificacion>
-      <br /><br />
-      {user === null ?
-        loginForm() :
-        <div>
-          <div className='user'>
-            <p><strong>Bienvenid@:</strong> {user.name} </p>
-            <button type='submit' onClick={cerrarSession}> Salir</button>
+      {
+        user
+          ?
+          <div>
+            <div className='user'>
+              <p><strong>Bienvenid@:</strong> {user.name} </p>
+              <button type='submit' onClick={cerrarSession}> Salir</button>
+            </div>
+            <NoteForm notes={notes} setNotes={setNotes} />
           </div>
-          {noteForm()}
-        </div>
+          : <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
       }
-      <br /><br />
 
-
-
+      <div id='notas'>
+        <h1>Notes</h1>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map(note => (
+            <Note
+              key={note.id}
+              note={note}
+              toggleImportance={() => toggleImportanceOf(note.id)}
+            />
+          ))}
+        </ul>
+      </div>
       <div id='guia-telefonica'>
         <hr />
         <PersonForm />
       </div>
-
       <div>
         <hr />
         <Index />
       </div>
-
       <Footer> </Footer>
     </div>
   )
