@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import ListPerson from './DetailPerson'
-import personService from './services/person'
-import Notificacion from './Notificacion'
+import ListPerson from './ListPerson'
+import personService from '../../services/person'
+import Notificacion from '../utils/Notificacion'
 
 const PersonForm = () => {
     const [persons, setPersons] = useState([])

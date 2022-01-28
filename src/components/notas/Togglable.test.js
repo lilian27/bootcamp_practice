@@ -1,7 +1,7 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, fireEvent } from '@testing-library/react'
-import Togglable from '../Togglable'
+import Togglable from '../utils/Togglable'
 
 describe('<Toggable />', () =>{
     let component
