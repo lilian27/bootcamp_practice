@@ -1,15 +1,14 @@
 import DetallePais from "./DetallePais";
 import Pais from "./Pais"
 
+
 const Resultado = ({ paises }) => {
     if (paises.length > 1) {
         return (
             <div>
-                <ul>
-                    {paises.map(data => (
-                        <Pais pais={data} />
-                    ))}
-                </ul>
+                {paises.map(data => (
+                    <Pais pais={data} />
+                ))}
             </div>
         )
     } else {

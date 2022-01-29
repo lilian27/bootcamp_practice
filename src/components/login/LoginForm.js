@@ -24,7 +24,7 @@ const LoginForm = () => {
     setUser(user)
     setUsername('')
     setPassword('')
-    history.push("/home");
+    history.push("/");
 
     
   }

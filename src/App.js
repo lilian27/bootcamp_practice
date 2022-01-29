@@ -1,22 +1,17 @@
 import './App.css'
 import React, { useState, useEffect } from 'react'
-
 import PersonForm from './components/guiaTelefonica/PersonForm'
 import Index from './components/paises/Index.js'
 import noteService from './services/notes'
-
 import Footer from './components/footer/Footer'
-import loginService from './services/login'
 import LoginForm from './components/login/LoginForm'
-import NoteForm from './NoteForm'
 import Contador from './components/contador/Contador'
-
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Switch, Link } from 'react-router-dom';
-
 import Notas from './components/notas/Notas'
 import Home from './components/home/Home'
 import { useHistory } from "react-router-dom";
+import { Nav, Item, Navbar, NavDropdown, Container } from 'react-bootstrap'
 
 function App() {
   const history = useHistory();
@@ -35,7 +30,7 @@ function App() {
     }
   }, [])
 
- 
+
   const sendMessage = (mensaje, tipoMensaje) => {
     setErrorMessage(mensaje)
     setTipoMessage(tipoMensaje)
@@ -44,7 +39,7 @@ function App() {
     }, 3000)
   }
 
- 
+
   const cerrarSession = () => {
     window.localStorage.clear()
     setUser(null)
@@ -56,22 +51,44 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="container">
       <Router>
-        <div>
-        <Link style={padding} to="/"></Link>
-          <Link style={padding} to="/home">Home</Link>
-          <Link style={padding} to="/contador">Contador</Link>
-          <Link style={padding} to="/notas">Notas</Link>
-          <Link style={padding} to="/guia-telefonica">Guía telefonica</Link>
-          <Link style={padding} to="/paises">Paises</Link>
-          {
-            window.localStorage.getItem('loggedAppUser')
-              ? <button type="button" color="inherit" onClick={cerrarSession}>Logout</button>
-              : <Link style={padding} to="/login">login</Link>
-          }
-        </div>
-
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link href="#home" as="span">
+                <Link style={padding} to="/">Home</Link>
+              </Nav.Link>
+              <Nav.Link href="#home" as="span">
+                <Link style={padding} to="/contador">Contador</Link>
+              </Nav.Link>
+              <Nav.Link href="#home" as="span">
+                <Link style={padding} to="/notas">Notas</Link>
+              </Nav.Link>
+              <Nav.Link href="#home" as="span">
+                <Link style={padding} to="/guia-telefonica">Guía telefonica</Link>
+              </Nav.Link>
+              <Nav.Link href="#home" as="span">
+                <Link style={padding} to="/paises">Paises</Link>
+              </Nav.Link>
+              <Nav.Link href="#home" as="span" >
+                {
+                  window.localStorage.getItem('loggedAppUser')
+                    ? <button type="button" color="inherit" onClick={cerrarSession}>Logout</button>
+                    : <Link style={padding} to="/login">login</Link>
+                }
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        {
+          window.localStorage.getItem('loggedAppUser')
+            ? <div className='user pt-2'>
+              <p><strong>Bienvenid@:</strong> </p>
+            </div>
+            : ''
+        }
         <Switch>
           <Route path='/home'>
             <Home />
@@ -93,6 +110,11 @@ function App() {
           </Route>
         </Switch>
       </Router>
+
+
+
+
+
       <Footer> </Footer>
     </div>
   )

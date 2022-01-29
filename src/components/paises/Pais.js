@@ -1,8 +1,12 @@
+import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
+
 const Pais = ({ pais }) => {
     return (
-        <div> 
-            <li key={pais.name.official}> {pais.name.official} </li>
-        </div>
+        <Card className="mt-2">
+            <Card.Body>
+                <Card.Title>{pais.flag} {pais.name.official}</Card.Title>
+            </Card.Body>
+        </Card>
     )
 }
 export default Pais

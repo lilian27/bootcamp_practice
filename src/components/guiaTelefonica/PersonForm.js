@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ListPerson from './ListPerson'
 import personService from '../../services/person'
 import Notificacion from '../utils/Notificacion'
+import { Form, Row, Col, Button, Table } from 'react-bootstrap'
 
 const PersonForm = () => {
     const [persons, setPersons] = useState([])
@@ -83,32 +84,63 @@ const PersonForm = () => {
         setErrorMessage(mensaje)
         setTipoMessage(tipoMensaje)
         setTimeout(() => {
-          setErrorMessage(null)
+            setErrorMessage(null)
         }, 3000)
-      }
+    }
 
     return (
-        <div>
-            <h2>Guía telefonica</h2>
+        <div className="pt-5">
+            <h4>Agregar nuevo contacto</h4>
             <Notificacion messaje={errorMessage} tipo={tipoMessage}></Notificacion>
-            <form onSubmit={addName}>
-                <div>
-                    Name: <input value={newName} onChange={handleNameChange} />
-                </div>
-                <div>
-                    Number: <input value={newNumber} onChange={handleNumberChange} />
-                    <button type="submit">guardar</button>
-                </div>
-                <div>
-                    <h2>Numbers</h2>
-                    <div>filter shown whith <input value={newFilter} onChange={handleFilterChange} /></div>
-                    <ul>
-                        {filterToShow.map(persona => (
-                            <ListPerson key={persona.id} persona={persona} handleDelete={() => handleDelete(persona.id)} />
-                        ))}
-                    </ul>
-                </div>
-            </form>
+
+            <Form onSubmit={addName}>
+                <Row>
+                    <Col sm="12" md="4" >
+                        <Form.Group className="mb-3" controlId="name" value={newName}
+                            onChange={handleNameChange}>
+                            <Form.Control type="text" placeholder="Ingrese Nombre" />
+                        </Form.Group>
+                    </Col>
+                    <Col sm="12" md="4" >
+                        <Form.Group className="mb-3" controlId="number" value={newNumber}
+                            onChange={handleNumberChange}>
+                            <Form.Control type="text" placeholder="Ingrese Número" />
+                        </Form.Group>
+                    </Col>
+                    <Col sm="12" md="2">
+                        <Button className="btn-block" type="submit">Agregar</Button>
+                    </Col>
+                </Row>
+            </Form>
+
+
+            <h4 className="mt-5">Lista de contactos</h4>
+            <Row className="justify-content-end ">
+                <Col sm="12" md="3" >
+                    <Form>
+                        <Form.Group className="mb-3" controlId="filter" value={newFilter}
+                            onChange={handleFilterChange}>
+                            <Form.Control type="text" placeholder="Buscar nombre" />
+                        </Form.Group>
+                    </Form>
+                </Col>
+            </Row>
+            <Table responsive striped>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th> Telefono</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filterToShow.map(persona => (
+                        <ListPerson key={persona.id} persona={persona} handleDelete={() => handleDelete(persona.id)} />
+                    ))
+                    }
+                </tbody>
+            </Table>
+
         </div>
     )
 }

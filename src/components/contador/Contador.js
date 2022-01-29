@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import Display from './Display'
-import Button from '../../Button'
+import { Button, Row, Col, Container } from 'react-bootstrap'
 
 const Contador = ({ note, toggleImportance }) => {
     const [counter, setCounter] = useState(0)
@@ -8,27 +7,19 @@ const Contador = ({ note, toggleImportance }) => {
     const decreaseByOne = () => setCounter(counter - 1)
     const setToZero = () => setCounter(0)
 
-    /*
-    const label = note.important ?
-        'hacer no importante' :
-        'make important'
-        */
-
     return (
-        <div>
-            <Display counter={counter} />
-            <Button
-                handleClick={increaseByOne}
-                text='plus'
-            />
-            <Button
-                handleClick={setToZero}
-                text='zero'
-            />
-            <Button
-                handleClick={decreaseByOne}
-                text='minus'
-            />
+        <div className="pt-5">
+            <Container>
+                <Row className="justify-content-md-center">
+                    <Col sm="12" className="pb-3">
+                        <h2 className="text-center">Counter</h2>
+                        <h3 className="text-center fs-1 fw-bold">{counter}</h3>
+                    </Col>
+                    <Col sm="12" md="2"><Button variant="outline-primary" className="btn-block"  onClick={increaseByOne} >Aumentar</Button></Col>
+                    <Col sm="12" md="2"><Button variant="outline-dark" className="btn-block" onClick={setToZero} >Reiniciar</Button></Col>
+                    <Col sm="12" md="2"><Button variant="outline-danger" className="btn-block" onClick={decreaseByOne} >Disminuir</Button></Col>
+                </Row>
+            </Container>
         </div>
     )
 }

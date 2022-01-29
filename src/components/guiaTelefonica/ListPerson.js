@@ -1,15 +1,20 @@
 import React from 'react'
+import { Button } from 'react-bootstrap';
 
-const ListPerson = ({persona, handleDelete}) => {
+const ListPerson = ({ persona, handleDelete }) => {
 
     return (
-        <div>
-                    <li >
-                        <span>{persona.name}</span>
-                        <span> {persona.number}</span>
-                        <button type="button" onClick={ handleDelete}> Eliminar</button>
-                    </li>
-        </div>
+        <tr>
+            <td >
+                {persona.name}
+            </td>
+            <td >
+                {persona.number}
+            </td>
+            <td>
+                <Button variant="link" onClick={handleDelete}> Eliminar</Button>
+            </td>
+        </tr>
     )
 }
 
